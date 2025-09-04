@@ -49,12 +49,11 @@ export default function SignUpScreen() {
   const handleSignUp = async () => {
     if (!validateForm()) return;
     
-    const success = await signUp(formData);
-    if (success) {
-      router.replace('/(tabs)');
-    } else {
-      Alert.alert('Sign Up Failed', 'Please try again later.');
-    }
+    // Navigate to face recognition setup instead of direct sign up
+    router.push({
+      pathname: '/(auth)/face-signup',
+      params: formData
+    });
   };
 
   const updateField = (field: string, value: string) => {
