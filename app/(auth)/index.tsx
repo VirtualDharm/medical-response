@@ -46,9 +46,16 @@ export default function WelcomeScreen() {
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={[styles.button, styles.primaryButton]} 
+          onPress={() => router.push('/(auth)/face-signin')}
+        >
+          <Text style={styles.primaryButtonText}>Face Sign In</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={[styles.button, styles.tertiaryButton]} 
           onPress={() => router.push('/(auth)/signin')}
         >
-          <Text style={styles.primaryButtonText}>Sign In</Text>
+          <Text style={styles.tertiaryButtonText}>Email Sign In</Text>
         </TouchableOpacity>
         
         <TouchableOpacity 
@@ -188,5 +195,15 @@ const styles = StyleSheet.create({
     color: '#475569',
     fontSize: isTablet ? 18 : 16,
     fontWeight: '600',
+  },
+  tertiaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#94A3B8',
+  },
+  tertiaryButtonText: {
+    color: '#64748B',
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
