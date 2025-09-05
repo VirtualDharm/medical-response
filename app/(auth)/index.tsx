@@ -44,9 +44,9 @@ export default function WelcomeScreen() {
         </View>
 
       <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.button, styles.primaryButton]} 
-          onPress={() => router.push('/(auth)/face-signin')}
+        <TouchableOpacity
+          style={[styles.button, styles.primaryButton]}
+          onPress={() => router.push({ pathname: '/(auth)/face-signin' })}
         >
           <Text style={styles.primaryButtonText}>Face Sign In</Text>
         </TouchableOpacity>
