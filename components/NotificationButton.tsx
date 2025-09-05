@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Text, StyleSheet, Alert } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, Alert, Dimensions } from 'react-native';
 import { Send } from 'lucide-react-native';
+
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 export function NotificationButton() {
   const [isSending, setIsSending] = useState(false);
@@ -15,7 +18,7 @@ export function NotificationButton() {
     
     Alert.alert(
       '✅ Notification Sent',
-      'Your healthcare provider has been notified about your current status.',
+      'Your healthcare provider has been notified about your current status and vital signs. They will review your data and contact you if needed.',
       [{ text: 'OK' }]
     );
   };
@@ -27,7 +30,7 @@ export function NotificationButton() {
       disabled={isSending}
       activeOpacity={0.8}
     >
-      <Send color="#2563EB" size={20} />
+      <Send color="#2563EB" size={isTablet ? 28 : 20} />
       <Text style={styles.notificationText}>
         {isSending ? 'Sending...' : 'Send Update to Provider'}
       </Text>
@@ -41,9 +44,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 56,
-    borderRadius: 12,
-    gap: 12,
+    height: isTablet ? 72 : 56,
+    borderRadius: isTablet ? 16 : 12,
+    gap: isTablet ? 16 : 12,
     borderWidth: 2,
     borderColor: '#2563EB',
     shadowColor: '#2563EB',
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
   },
   notificationText: {
     color: '#2563EB',
-    fontSize: 16,
+    fontSize: isTablet ? 18 : 16,
     fontWeight: '600',
   },
 });

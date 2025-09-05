@@ -7,13 +7,14 @@ interface User {
   lastName: string;
   dateOfBirth: string;
   phone: string;
+  medicalId: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (userData: Omit<User, 'id'> & { password: string }) => Promise<boolean>;
+  signUp: (userData: Omit<User, 'id' | 'medicalId'> & { password: string }) => Promise<boolean>;
   signOut: () => void;
 }
 
@@ -45,7 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         firstName: 'John',
         lastName: 'Doe',
         dateOfBirth: '1985-06-15',
-        phone: '+1 (555) 123-4567'
+        phone: '+1 (555) 123-4567',
+        medicalId: 'MED-2024-001'
       };
       
       setUser(mockUser);
@@ -57,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (userData: Omit<User, 'id'> & { password: string }): Promise<boolean> => {
+  const signUp = async (userData: Omit<User, 'id' | 'medicalId'> & { password: string }): Promise<boolean> => {
     try {
       setIsLoading(true);
       // Simulate API call
@@ -70,7 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         firstName: userData.firstName,
         lastName: userData.lastName,
         dateOfBirth: userData.dateOfBirth,
-        phone: userData.phone
+        phone: userData.phone,
+        medicalId: `MED-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
       };
       
       setUser(newUser);
