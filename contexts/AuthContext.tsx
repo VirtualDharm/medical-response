@@ -7,14 +7,14 @@ interface User {
   lastName: string;
   dateOfBirth: string;
   phone: string;
+  medicalId: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<boolean>;
-  signUp: (userData: Omit<User, 'id'> & { password: string }) => Promise<boolean>;
-  signInWithFace: (userName: string, confidence: number) => Promise<boolean>;
+  signUp: (userData: Omit<User, 'id' | 'medicalId'> & { password: string }) => Promise<boolean>;
   signOut: () => void;
 }
 
@@ -46,7 +46,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         firstName: 'John',
         lastName: 'Doe',
         dateOfBirth: '1985-06-15',
-        phone: '+1 (555) 123-4567'
+        phone: '+1 (555) 123-4567',
+        medicalId: 'MED-2024-001'
       };
       
       setUser(mockUser);
@@ -58,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const signUp = async (userData: Omit<User, 'id'> & { password: string }): Promise<boolean> => {
+  const signUp = async (userData: Omit<User, 'id' | 'medicalId'> & { password: string }): Promise<boolean> => {
     try {
       setIsLoading(true);
       // Simulate API call
@@ -71,7 +72,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         firstName: userData.firstName,
         lastName: userData.lastName,
         dateOfBirth: userData.dateOfBirth,
-        phone: userData.phone
+        phone: userData.phone,
+        medicalId: `MED-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`
       };
       
       setUser(newUser);
@@ -87,33 +89,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
   };
 
-  const signInWithFace = async (userName: string, confidence: number): Promise<boolean> => {
-    try {
-      setIsLoading(true);
-      // Simulate API call to verify face recognition result
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock user data based on recognized face
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email: `${userName.toLowerCase()}@example.com`,
-        firstName: userName.split(/(?=[A-Z])/).join(' ').split(' ')[0] || userName,
-        lastName: userName.split(/(?=[A-Z])/).join(' ').split(' ').slice(1).join(' ') || '',
-        dateOfBirth: '1985-06-15',
-        phone: '+1 (555) 123-4567'
-      };
-      
-      setUser(mockUser);
-      setIsLoading(false);
-      return true;
-    } catch (error) {
-      setIsLoading(false);
-      return false;
-    }
-  };
-
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signInWithFace, signOut }}>
+    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

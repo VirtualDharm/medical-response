@@ -1,5 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 interface MedicalReading {
   id: string;
@@ -42,7 +45,7 @@ export function MedicalReadingCard({ reading, statusColor }: Props) {
     <TouchableOpacity style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={[styles.iconContainer, { backgroundColor: statusColor + '15' }]}>
-          <IconComponent color={statusColor} size={24} />
+          <IconComponent color={statusColor} size={isTablet ? 32 : 24} />
         </View>
         <View style={[styles.statusBadge, { backgroundColor: statusColor + '15' }]}>
           <Text style={[styles.statusText, { color: statusColor }]}>
@@ -66,8 +69,8 @@ export function MedicalReadingCard({ reading, statusColor }: Props) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
+    borderRadius: isTablet ? 20 : 16,
+    padding: isTablet ? 28 : 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -81,52 +84,52 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: isTablet ? 20 : 16,
   },
   iconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: isTablet ? 64 : 48,
+    height: isTablet ? 64 : 48,
+    borderRadius: isTablet ? 32 : 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    paddingHorizontal: isTablet ? 16 : 12,
+    paddingVertical: isTablet ? 6 : 4,
+    borderRadius: isTablet ? 16 : 12,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: isTablet ? 14 : 12,
     fontWeight: '600',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   cardContent: {
-    gap: 4,
+    gap: isTablet ? 6 : 4,
   },
   readingType: {
-    fontSize: 14,
+    fontSize: isTablet ? 16 : 14,
     color: '#64748B',
     fontWeight: '500',
   },
   valueContainer: {
     flexDirection: 'row',
     alignItems: 'baseline',
-    gap: 4,
+    gap: isTablet ? 6 : 4,
   },
   readingValue: {
-    fontSize: 32,
+    fontSize: isTablet ? 40 : 32,
     fontWeight: '700',
     color: '#1E293B',
   },
   readingUnit: {
-    fontSize: 16,
+    fontSize: isTablet ? 20 : 16,
     color: '#64748B',
     fontWeight: '500',
   },
   timestamp: {
-    fontSize: 12,
+    fontSize: isTablet ? 14 : 12,
     color: '#94A3B8',
-    marginTop: 8,
+    marginTop: isTablet ? 12 : 8,
   },
 });

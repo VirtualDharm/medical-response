@@ -1,7 +1,11 @@
 import { useEffect } from 'react';
 import { Tabs, router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { Heart, User, Bell } from 'lucide-react-native';
+import { Heart } from 'lucide-react-native';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 export default function TabLayout() {
   const { user } = useAuth();
@@ -25,39 +29,24 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: 'white',
           borderTopColor: '#E2E8F0',
-          height: 80,
-          paddingBottom: 20,
-          paddingTop: 8,
+          height: isTablet ? 90 : 80,
+          paddingBottom: isTablet ? 25 : 20,
+          paddingTop: isTablet ? 12 : 8,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
+          fontSize: isTablet ? 14 : 12,
           fontWeight: '600',
+        },
+        tabBarIconStyle: {
+          marginBottom: isTablet ? 4 : 2,
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Dashboard',
+          title: 'Patient Data',
           tabBarIcon: ({ size, color }) => (
-            <Heart size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ size, color }) => (
-            <User size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="notifications"
-        options={{
-          title: 'Notifications',
-          tabBarIcon: ({ size, color }) => (
-            <Bell size={size} color={color} />
+            <Heart size={isTablet ? size + 4 : size} color={color} />
           ),
         }}
       />

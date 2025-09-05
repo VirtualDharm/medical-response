@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react-native';
+
+const { width } = Dimensions.get('window');
+const isTablet = width >= 768;
 
 export default function SignInScreen() {
   const { signIn, isLoading } = useAuth();
@@ -43,76 +46,78 @@ export default function SignInScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-        style={styles.backButton} 
-        onPress={() => router.back()}
-      >
-        <ArrowLeft color="#64748B" size={24} />
-      </TouchableOpacity>
-
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to access your health dashboard</Text>
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => router.back()}
+        >
+          <ArrowLeft color="#64748B" size={isTablet ? 28 : 24} />
+        </TouchableOpacity>
 
-        <View style={styles.form}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Email</Text>
-            <View style={styles.inputWrapper}>
-              <Mail color="#94A3B8" size={20} style={styles.inputIcon} />
-              <TextInput
-                style={styles.input}
-                placeholder="Enter your email"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor="#94A3B8"
-              />
+        <View style={styles.formContainer}>
+          <Text style={styles.title}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Sign in to access your medical dashboard</Text>
+
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email Address</Text>
+              <View style={styles.inputWrapper}>
+                <Mail color="#94A3B8" size={isTablet ? 24 : 20} style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  placeholderTextColor="#94A3B8"
+                />
+              </View>
+              {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
             </View>
-            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputWrapper}>
+                <Lock color="#94A3B8" size={isTablet ? 24 : 20} style={styles.inputIcon} />
+                <TextInput
+                  style={[styles.input, styles.passwordInput]}
+                  placeholder="Enter your password"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!showPassword}
+                  placeholderTextColor="#94A3B8"
+                />
+                <TouchableOpacity 
+                  onPress={() => setShowPassword(!showPassword)}
+                  style={styles.eyeIcon}
+                >
+                  {showPassword ? 
+                    <EyeOff color="#94A3B8" size={isTablet ? 24 : 20} /> : 
+                    <Eye color="#94A3B8" size={isTablet ? 24 : 20} />
+                  }
+                </TouchableOpacity>
+              </View>
+              {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+            </View>
+
+            <TouchableOpacity 
+              style={[styles.signInButton, isLoading && styles.disabledButton]}
+              onPress={handleSignIn}
+              disabled={isLoading}
+            >
+              <Text style={styles.signInButtonText}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </Text>
+            </TouchableOpacity>
           </View>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Password</Text>
-            <View style={styles.inputWrapper}>
-              <Lock color="#94A3B8" size={20} style={styles.inputIcon} />
-              <TextInput
-                style={[styles.input, styles.passwordInput]}
-                placeholder="Enter your password"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!showPassword}
-                placeholderTextColor="#94A3B8"
-              />
-              <TouchableOpacity 
-                onPress={() => setShowPassword(!showPassword)}
-                style={styles.eyeIcon}
-              >
-                {showPassword ? 
-                  <EyeOff color="#94A3B8" size={20} /> : 
-                  <Eye color="#94A3B8" size={20} />
-                }
-              </TouchableOpacity>
-            </View>
-            {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
+              <Text style={styles.linkText}>Sign Up</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity 
-            style={[styles.signInButton, isLoading && styles.disabledButton]}
-            onPress={handleSignIn}
-            disabled={isLoading}
-          >
-            <Text style={styles.signInButtonText}>
-              {isLoading ? 'Signing In...' : 'Sign In'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/signup')}>
-            <Text style={styles.linkText}>Sign Up</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -124,44 +129,50 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8FAFC',
   },
-  backButton: {
-    marginTop: 50,
-    marginLeft: 24,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   content: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingHorizontal: isTablet ? 80 : 24,
+    paddingVertical: isTablet ? 60 : 40,
+    maxWidth: isTablet ? 600 : undefined,
+    alignSelf: 'center',
+    width: '100%',
+  },
+  backButton: {
+    width: isTablet ? 48 : 40,
+    height: isTablet ? 48 : 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: isTablet ? 40 : 20,
+  },
+  formContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: isTablet ? 36 : 28,
     fontWeight: '700',
     color: '#1E293B',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: isTablet ? 18 : 16,
     color: '#64748B',
     textAlign: 'center',
-    marginBottom: 40,
-    lineHeight: 24,
+    marginBottom: isTablet ? 48 : 40,
+    lineHeight: isTablet ? 26 : 24,
   },
   form: {
-    marginBottom: 40,
+    marginBottom: isTablet ? 48 : 40,
   },
   inputContainer: {
-    marginBottom: 24,
+    marginBottom: isTablet ? 32 : 24,
   },
   label: {
-    fontSize: 14,
+    fontSize: isTablet ? 16 : 14,
     fontWeight: '600',
     color: '#374151',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -170,27 +181,27 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#E2E8F0',
-    paddingHorizontal: 16,
-    height: 56,
+    paddingHorizontal: isTablet ? 20 : 16,
+    height: isTablet ? 64 : 56,
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: isTablet ? 16 : 12,
   },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: isTablet ? 18 : 16,
     color: '#1E293B',
   },
   passwordInput: {
-    paddingRight: 40,
+    paddingRight: isTablet ? 48 : 40,
   },
   eyeIcon: {
     position: 'absolute',
-    right: 16,
+    right: isTablet ? 20 : 16,
   },
   signInButton: {
     backgroundColor: '#2563EB',
-    height: 56,
+    height: isTablet ? 64 : 56,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
@@ -208,7 +219,7 @@ const styles = StyleSheet.create({
   },
   signInButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: isTablet ? 18 : 16,
     fontWeight: '600',
   },
   footer: {
@@ -217,17 +228,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 14,
+    fontSize: isTablet ? 16 : 14,
     color: '#64748B',
   },
   linkText: {
-    fontSize: 14,
+    fontSize: isTablet ? 16 : 14,
     color: '#2563EB',
     fontWeight: '600',
   },
   errorText: {
     color: '#DC2626',
-    fontSize: 12,
-    marginTop: 4,
+    fontSize: isTablet ? 14 : 12,
+    marginTop: 6,
   },
 });
