@@ -59,6 +59,7 @@ export default function WelcomeScreen() {
         </TouchableOpacity>
       </View>
     </View>
+    </View>
   );
 }
 
